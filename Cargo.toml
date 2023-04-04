@@ -95,5 +95,5 @@ members = ["derive"]
 bevy = { path = "../bevy" }
 
 [patch."https://github.com/project-flara/bevy_egui.git"]
-bevy = { path = "../bevy_egui" }
+bevy_egui = { path = "../bevy_egui" }
 
