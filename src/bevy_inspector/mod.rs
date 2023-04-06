@@ -44,7 +44,7 @@ use bevy::ecs::query::ReadOnlyWorldQuery;
 use bevy::ecs::system::CommandQueue;
 use bevy::ecs::{component::ComponentId, prelude::*};
 use bevy::hierarchy::{Children, Parent};
-use bevy::reflect::{Reflect, TypeRegistry, TypeRegistryInternal};
+use bevy::reflect::{Reflect, TypeRegistryInternal};
 use pretty_type_name::pretty_type_name;
 
 pub(crate) mod errors;
