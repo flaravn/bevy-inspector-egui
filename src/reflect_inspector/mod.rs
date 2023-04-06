@@ -3,7 +3,7 @@
 //! # Examples
 //! **Basic usage**
 //! ```rust
-//! use bevy_reflect::{Reflect, TypeRegistry};
+//! use bevy::reflect::{Reflect, TypeRegistry};
 //! use bevy_inspector_egui::reflect_inspector::{ui_for_value, InspectorUi, Context};
 //!
 //! #[derive(Reflect)]
@@ -25,12 +25,12 @@
 //!
 //! **Bevy specific usage**
 //! ```rust
-//! use bevy_reflect::{Reflect, TypeRegistry};
+//! use bevy::reflect::{Reflect, TypeRegistry};
 //! use bevy_inspector_egui::reflect_inspector::{InspectorUi, Context};
 //!
-//! use bevy_ecs::prelude::*;
-//! use bevy_asset::Handle;
-//! use bevy_pbr::StandardMaterial;
+//! use bevy::ecs::prelude::*;
+//! use bevy::asset::Handle;
+//! use bevy::pbr::StandardMaterial;
 //!
 //! #[derive(Reflect)]
 //! struct Data {
@@ -57,9 +57,9 @@
 use crate::inspector_egui_impls::{iter_all_eq, InspectorEguiImpl};
 use crate::inspector_options::{InspectorOptions, ReflectInspectorOptions, Target};
 use crate::restricted_world_view::RestrictedWorldView;
-use bevy_ecs::system::CommandQueue;
-use bevy_reflect::{std_traits::ReflectDefault, DynamicStruct};
-use bevy_reflect::{
+use bevy::ecs::system::CommandQueue;
+use bevy::reflect::{std_traits::ReflectDefault, DynamicStruct};
+use bevy::reflect::{
     Array, DynamicEnum, DynamicTuple, DynamicVariant, Enum, EnumInfo, List, ListInfo, Map, Reflect,
     ReflectMut, ReflectRef, Struct, StructInfo, Tuple, TupleInfo, TupleStruct, TupleStructInfo,
     TypeInfo, TypeRegistry, ValueInfo, VariantInfo, VariantType,

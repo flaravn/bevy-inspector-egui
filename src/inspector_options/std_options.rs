@@ -1,4 +1,4 @@
-use bevy_ecs::entity::Entity;
+use bevy::ecs::entity::Entity;
 use std::collections::VecDeque;
 
 use crate::InspectorOptions;
@@ -142,7 +142,7 @@ pub enum QuatDisplay {
     AxisAngle,
 }
 
-impl_options!(bevy_math::Quat => QuatOptions);
+impl_options!(bevy::math::Quat => QuatOptions);
 
 #[derive(Clone)]
 #[non_exhaustive]

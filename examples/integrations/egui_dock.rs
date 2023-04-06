@@ -1,7 +1,7 @@
 use std::any::TypeId;
 
+use bevy::asset::{HandleId, ReflectAsset};
 use bevy::prelude::*;
-use bevy_asset::{HandleId, ReflectAsset};
 use bevy_egui::EguiContext;
 use bevy_inspector_egui::bevy_inspector::hierarchy::{hierarchy_ui, SelectedEntities};
 use bevy_inspector_egui::bevy_inspector::{
@@ -10,10 +10,10 @@ use bevy_inspector_egui::bevy_inspector::{
 use bevy_inspector_egui::DefaultInspectorConfigPlugin;
 // use bevy_mod_picking::backends::egui::EguiPointer;
 // use bevy_mod_picking::prelude::*;
+use bevy::reflect::TypeRegistry;
+use bevy::render::camera::{CameraProjection, Viewport};
+use bevy::window::PrimaryWindow;
 use bevy_egui::EguiSet;
-use bevy_reflect::TypeRegistry;
-use bevy_render::camera::{CameraProjection, Viewport};
-use bevy_window::PrimaryWindow;
 use egui_dock::{NodeIndex, Tree};
 use egui_gizmo::GizmoMode;
 

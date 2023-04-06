@@ -1,8 +1,8 @@
 //! UI implementations for leaf types
 
 use crate::reflect_inspector::{errors::no_multiedit, InspectorUi};
-use bevy_reflect::{Reflect, TypeRegistry};
-use bevy_utils::Instant;
+use bevy::reflect::{Reflect, TypeRegistry};
+use bevy::utils::Instant;
 use std::{
     any::{Any, TypeId},
     borrow::Cow,
@@ -144,45 +144,45 @@ pub fn register_std_impls(type_registry: &mut TypeRegistry) {
     add_no_many::<Instant>(type_registry, std_impls::instant_ui, std_impls::instant_ui_readonly);
 }
 
-/// Register [`InspectorEguiImpl`]s for [`bevy_math`](bevy_math)/`glam` types
+/// Register [`InspectorEguiImpl`]s for [`bevy::math`](bevy::math)/`glam` types
 #[rustfmt::skip]
 pub fn register_glam_impls(type_registry: &mut TypeRegistry) {
-    add::<bevy_math::Vec2>(type_registry, glam_impls::vec2_ui, glam_impls::vec2_ui_readonly, glam_impls::vec2_ui_many);
-    add::<bevy_math::Vec3>(type_registry, glam_impls::vec3_ui, glam_impls::vec3_ui_readonly, glam_impls::vec3_ui_many);
-    add::<bevy_math::Vec3A>(type_registry, glam_impls::vec3a_ui, glam_impls::vec3a_ui_readonly, glam_impls::vec3a_ui_many);
-    add::<bevy_math::Vec4>(type_registry, glam_impls::vec4_ui, glam_impls::vec4_ui_readonly, glam_impls::vec4_ui_many);
-    add::<bevy_math::UVec2>(type_registry, glam_impls::uvec2_ui, glam_impls::uvec2_ui_readonly, glam_impls::uvec2_ui_many);
-    add::<bevy_math::UVec3>(type_registry, glam_impls::uvec3_ui, glam_impls::uvec3_ui_readonly, glam_impls::uvec3_ui_many);
-    add::<bevy_math::UVec4>(type_registry, glam_impls::uvec4_ui, glam_impls::uvec4_ui_readonly, glam_impls::uvec4_ui_many);
-    add::<bevy_math::IVec2>(type_registry, glam_impls::ivec2_ui, glam_impls::ivec2_ui_readonly, glam_impls::ivec2_ui_many);
-    add::<bevy_math::IVec3>(type_registry, glam_impls::ivec3_ui, glam_impls::ivec3_ui_readonly, glam_impls::ivec3_ui_many);
-    add::<bevy_math::IVec4>(type_registry, glam_impls::ivec4_ui, glam_impls::ivec4_ui_readonly, glam_impls::ivec4_ui_many);
-    add::<bevy_math::DVec2>(type_registry, glam_impls::dvec2_ui, glam_impls::dvec2_ui_readonly, glam_impls::dvec2_ui_many);
-    add::<bevy_math::DVec3>(type_registry, glam_impls::dvec3_ui, glam_impls::dvec3_ui_readonly, glam_impls::dvec3_ui_many);
-    add::<bevy_math::DVec4>(type_registry, glam_impls::dvec4_ui, glam_impls::dvec4_ui_readonly, glam_impls::dvec4_ui_many);
-    add_no_many::<bevy_math::BVec2>(type_registry, glam_impls::bvec2_ui, glam_impls::bvec2_ui_readonly);
-    add_no_many::<bevy_math::BVec3>(type_registry, glam_impls::bvec3_ui, glam_impls::bvec3_ui_readonly);
-    add_no_many::<bevy_math::BVec4>(type_registry, glam_impls::bvec4_ui, glam_impls::bvec4_ui_readonly);
-    add_no_many::<bevy_math::Mat2>(type_registry, glam_impls::mat2_ui, glam_impls::mat2_ui_readonly);
-    add_no_many::<bevy_math::Mat3>(type_registry, glam_impls::mat3_ui, glam_impls::mat3_ui_readonly);
-    add_no_many::<bevy_math::Mat3A>(type_registry, glam_impls::mat3a_ui, glam_impls::mat3a_ui_readonly);
-    add_no_many::<bevy_math::Mat4>(type_registry, glam_impls::mat4_ui, glam_impls::mat4_ui_readonly);
-    add_no_many::<bevy_math::DMat2>(type_registry, glam_impls::dmat2_ui, glam_impls::dmat2_ui_readonly);
-    add_no_many::<bevy_math::DMat3>(type_registry, glam_impls::dmat3_ui, glam_impls::dmat3_ui_readonly);
-    add_no_many::<bevy_math::DMat4>(type_registry, glam_impls::dmat4_ui, glam_impls::dmat4_ui_readonly);
+    add::<bevy::math::Vec2>(type_registry, glam_impls::vec2_ui, glam_impls::vec2_ui_readonly, glam_impls::vec2_ui_many);
+    add::<bevy::math::Vec3>(type_registry, glam_impls::vec3_ui, glam_impls::vec3_ui_readonly, glam_impls::vec3_ui_many);
+    add::<bevy::math::Vec3A>(type_registry, glam_impls::vec3a_ui, glam_impls::vec3a_ui_readonly, glam_impls::vec3a_ui_many);
+    add::<bevy::math::Vec4>(type_registry, glam_impls::vec4_ui, glam_impls::vec4_ui_readonly, glam_impls::vec4_ui_many);
+    add::<bevy::math::UVec2>(type_registry, glam_impls::uvec2_ui, glam_impls::uvec2_ui_readonly, glam_impls::uvec2_ui_many);
+    add::<bevy::math::UVec3>(type_registry, glam_impls::uvec3_ui, glam_impls::uvec3_ui_readonly, glam_impls::uvec3_ui_many);
+    add::<bevy::math::UVec4>(type_registry, glam_impls::uvec4_ui, glam_impls::uvec4_ui_readonly, glam_impls::uvec4_ui_many);
+    add::<bevy::math::IVec2>(type_registry, glam_impls::ivec2_ui, glam_impls::ivec2_ui_readonly, glam_impls::ivec2_ui_many);
+    add::<bevy::math::IVec3>(type_registry, glam_impls::ivec3_ui, glam_impls::ivec3_ui_readonly, glam_impls::ivec3_ui_many);
+    add::<bevy::math::IVec4>(type_registry, glam_impls::ivec4_ui, glam_impls::ivec4_ui_readonly, glam_impls::ivec4_ui_many);
+    add::<bevy::math::DVec2>(type_registry, glam_impls::dvec2_ui, glam_impls::dvec2_ui_readonly, glam_impls::dvec2_ui_many);
+    add::<bevy::math::DVec3>(type_registry, glam_impls::dvec3_ui, glam_impls::dvec3_ui_readonly, glam_impls::dvec3_ui_many);
+    add::<bevy::math::DVec4>(type_registry, glam_impls::dvec4_ui, glam_impls::dvec4_ui_readonly, glam_impls::dvec4_ui_many);
+    add_no_many::<bevy::math::BVec2>(type_registry, glam_impls::bvec2_ui, glam_impls::bvec2_ui_readonly);
+    add_no_many::<bevy::math::BVec3>(type_registry, glam_impls::bvec3_ui, glam_impls::bvec3_ui_readonly);
+    add_no_many::<bevy::math::BVec4>(type_registry, glam_impls::bvec4_ui, glam_impls::bvec4_ui_readonly);
+    add_no_many::<bevy::math::Mat2>(type_registry, glam_impls::mat2_ui, glam_impls::mat2_ui_readonly);
+    add_no_many::<bevy::math::Mat3>(type_registry, glam_impls::mat3_ui, glam_impls::mat3_ui_readonly);
+    add_no_many::<bevy::math::Mat3A>(type_registry, glam_impls::mat3a_ui, glam_impls::mat3a_ui_readonly);
+    add_no_many::<bevy::math::Mat4>(type_registry, glam_impls::mat4_ui, glam_impls::mat4_ui_readonly);
+    add_no_many::<bevy::math::DMat2>(type_registry, glam_impls::dmat2_ui, glam_impls::dmat2_ui_readonly);
+    add_no_many::<bevy::math::DMat3>(type_registry, glam_impls::dmat3_ui, glam_impls::dmat3_ui_readonly);
+    add_no_many::<bevy::math::DMat4>(type_registry, glam_impls::dmat4_ui, glam_impls::dmat4_ui_readonly);
 
-    add::<bevy_math::Quat>(type_registry, glam_impls::quat::quat_ui, glam_impls::quat::quat_ui_readonly, glam_impls::quat::quat_ui_many);
+    add::<bevy::math::Quat>(type_registry, glam_impls::quat::quat_ui, glam_impls::quat::quat_ui_readonly, glam_impls::quat::quat_ui_many);
 }
 
 /// Register [`InspectorEguiImpl`]s for `bevy` types
 #[rustfmt::skip]
 pub fn register_bevy_impls(type_registry: &mut TypeRegistry) {
     add_no_many::<bevy_asset::HandleId>(type_registry, bevy_impls::handle_id_ui, bevy_impls::handle_id_ui_readonly);
-    add_no_many::<bevy_asset::Handle<bevy_render::texture::Image>>(type_registry, image::image_handle_ui, image::image_handle_ui_readonly);
-    add_no_many::<bevy_asset::Handle<bevy_render::mesh::Mesh>>(type_registry, bevy_impls::mesh_ui, bevy_impls::mesh_ui_readonly);
-    add_no_many::<bevy_ecs::entity::Entity>(type_registry, bevy_impls::entity_ui, bevy_impls::entity_ui_readonly);
-    add::<bevy_render::color::Color>(type_registry, bevy_impls::color_ui, bevy_impls::color_ui_readonly, bevy_impls::color_ui_many);
-    add::<bevy_render::view::RenderLayers>(type_registry, bevy_impls::render_layers_ui, bevy_impls::render_layers_ui_readonly, bevy_impls::render_layers_ui_many);
+    add_no_many::<bevy_asset::Handle<bevy::render::texture::Image>>(type_registry, image::image_handle_ui, image::image_handle_ui_readonly);
+    add_no_many::<bevy_asset::Handle<bevy::render::mesh::Mesh>>(type_registry, bevy_impls::mesh_ui, bevy_impls::mesh_ui_readonly);
+    add_no_many::<bevy::ecs::entity::Entity>(type_registry, bevy_impls::entity_ui, bevy_impls::entity_ui_readonly);
+    add::<bevy::render::color::Color>(type_registry, bevy_impls::color_ui, bevy_impls::color_ui_readonly, bevy_impls::color_ui_many);
+    add::<bevy::render::view::RenderLayers>(type_registry, bevy_impls::render_layers_ui, bevy_impls::render_layers_ui_readonly, bevy_impls::render_layers_ui_many);
 }
 
 pub(crate) fn change_slider<T>(
@@ -241,8 +241,8 @@ macro_rules! many_ui {
             options: &dyn Any,
             id: egui::Id,
             env: InspectorUi<'_, '_>,
-            values: &mut [&mut dyn bevy_reflect::Reflect],
-            projector: &dyn Fn(&mut dyn bevy_reflect::Reflect) -> &mut dyn bevy_reflect::Reflect,
+            values: &mut [&mut dyn bevy::reflect::Reflect],
+            projector: &dyn Fn(&mut dyn bevy::reflect::Reflect) -> &mut dyn bevy::reflect::Reflect,
         ) -> bool {
             let same = $crate::inspector_egui_impls::iter_all_eq(
                 values

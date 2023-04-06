@@ -2,10 +2,10 @@
 
 use std::any::TypeId;
 
-use bevy_ecs::{
+use bevy::ecs::{
     change_detection::MutUntyped, prelude::*, world::unsafe_world_cell::UnsafeWorldCell,
 };
-use bevy_reflect::{Reflect, ReflectFromPtr, TypeRegistry};
+use bevy::reflect::{Reflect, ReflectFromPtr, TypeRegistry};
 use smallvec::{smallvec, SmallVec};
 
 #[derive(Debug)]
@@ -22,18 +22,18 @@ pub enum Error {
 
 type EntityComponent = (Entity, TypeId);
 
-/// A view into the world which may only access certain resources and components. A restricted form of [`&mut World`](bevy_ecs::world::World).
+/// A view into the world which may only access certain resources and components. A restricted form of [`&mut World`](bevy::ecs::world::World).
 ///
 /// Can be used to access a value, and give out the remaining "&mut World" somewhere else.
 ///
 /// # Example usage
 ///
 /// ```no_run
-/// use bevy_ecs::prelude::*;
+/// use bevy::ecs::prelude::*;
 /// use std::any::TypeId;
 /// use bevy_inspector_egui::restricted_world_view::RestrictedWorldView;
-/// # use bevy_asset::Assets;
-/// # use bevy_pbr::StandardMaterial;
+/// # use bevy::asset::Assets;
+/// # use bevy::pbr::StandardMaterial;
 ///
 /// let mut world = World::new();
 /// let mut world = RestrictedWorldView::new(&mut world);
@@ -435,8 +435,8 @@ unsafe fn mut_untyped_to_reflect<'a>(
 mod tests {
     use std::any::TypeId;
 
-    use bevy_ecs::prelude::*;
-    use bevy_reflect::{Reflect, TypeRegistry};
+    use bevy::ecs::prelude::*;
+    use bevy::reflect::{Reflect, TypeRegistry};
 
     use super::RestrictedWorldView;
 

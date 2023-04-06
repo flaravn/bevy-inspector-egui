@@ -1,4 +1,4 @@
-use bevy_reflect::{TypeData, TypeInfo, TypeRegistry};
+use bevy::reflect::{TypeData, TypeInfo, TypeRegistry};
 
 use crate::{
     inspector_options::{std_options::NumberOptions, Target},
@@ -12,7 +12,7 @@ fn insert_options_struct<T: 'static>(
     fields: &[(&'static str, &dyn TypeData)],
 ) {
     let Some(registration) = type_registry.get_mut(std::any::TypeId::of::<T>()) else {
-        bevy_log::warn!("Attempting to set default inspector options for {}, but it wasn't registered in the type registry.", std::any::type_name::<T>());
+        bevy::log::warn!("Attempting to set default inspector options for {}, but it wasn't registered in the type registry.", std::any::type_name::<T>());
         return;
     };
     if registration.data::<ReflectInspectorOptions>().is_none() {
@@ -34,7 +34,7 @@ fn insert_options_enum<T: 'static>(
     fields: &[(&'static str, &'static str, &dyn TypeData)],
 ) {
     let Some(registration) = type_registry.get_mut(std::any::TypeId::of::<T>()) else {
-        bevy_log::warn!("Attempting to set default inspector options for {}, but it wasn't registered in the type registry.", std::any::type_name::<T>());
+        bevy::log::warn!("Attempting to set default inspector options for {}, but it wasn't registered in the type registry.", std::any::type_name::<T>());
         return;
     };
     if registration.data::<ReflectInspectorOptions>().is_none() {
@@ -46,9 +46,9 @@ fn insert_options_enum<T: 'static>(
             };
             let variant_index = info.index_of(variant).unwrap();
             let field_index = match info.variant_at(variant_index).unwrap() {
-                bevy_reflect::VariantInfo::Struct(strukt) => strukt.index_of(field).unwrap(),
-                bevy_reflect::VariantInfo::Tuple(_) => field.parse().unwrap(),
-                bevy_reflect::VariantInfo::Unit(_) => unreachable!(),
+                bevy::reflect::VariantInfo::Struct(strukt) => strukt.index_of(field).unwrap(),
+                bevy::reflect::VariantInfo::Tuple(_) => field.parse().unwrap(),
+                bevy::reflect::VariantInfo::Unit(_) => unreachable!(),
             };
             options.insert_boxed(
                 Target::VariantField {
@@ -63,7 +63,7 @@ fn insert_options_enum<T: 'static>(
 }
 
 pub fn register_default_options(type_registry: &mut TypeRegistry) {
-    insert_options_enum::<bevy_render::color::Color>(
+    insert_options_enum::<bevy::render::color::Color>(
         type_registry,
         &[
             ("Rgba", "red", &NumberOptions::<f32>::normalized()),
@@ -81,7 +81,7 @@ pub fn register_default_options(type_registry: &mut TypeRegistry) {
         ],
     );
 
-    insert_options_struct::<bevy_render::view::ColorGrading>(
+    insert_options_struct::<bevy::render::view::ColorGrading>(
         type_registry,
         &[
             (
@@ -137,13 +137,13 @@ pub fn register_default_options(type_registry: &mut TypeRegistry) {
                 (
                     "XYZ",
                     "dimensions",
-                    &NumberOptions::<bevy_math::UVec3>::at_least(bevy_math::UVec3::ONE),
+                    &NumberOptions::<bevy::math::UVec3>::at_least(bevy::math::UVec3::ONE),
                 ),
             ],
         );
     }
 
-    insert_options_enum::<bevy_core_pipeline::core_3d::Camera3dDepthLoadOp>(
+    insert_options_enum::<bevy::core_pipeline::core_3d::Camera3dDepthLoadOp>(
         type_registry,
         &[("Clear", "0", &NumberOptions::<f32>::normalized())],
     );

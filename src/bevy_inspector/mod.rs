@@ -4,10 +4,10 @@
 //!
 //! ```rust
 //! use bevy_inspector_egui::bevy_inspector;
-//! # use bevy_ecs::prelude::*;
-//! # use bevy_reflect::Reflect;
-//! # use bevy_render::prelude::Msaa;
-//! # use bevy_math::Vec3;
+//! # use bevy::ecs::prelude::*;
+//! # use bevy::reflect::Reflect;
+//! # use bevy::render::prelude::Msaa;
+//! # use bevy::math::Vec3;
 //!
 //! #[derive(Debug, Clone, Eq, PartialEq, Hash, Reflect)]
 //! enum AppState { A, B, C }
@@ -38,13 +38,13 @@
 
 use std::any::TypeId;
 
-use bevy_app::prelude::AppTypeRegistry;
-use bevy_asset::{Asset, Assets, ReflectAsset};
-use bevy_ecs::query::ReadOnlyWorldQuery;
-use bevy_ecs::system::CommandQueue;
-use bevy_ecs::{component::ComponentId, prelude::*};
-use bevy_hierarchy::{Children, Parent};
-use bevy_reflect::{Reflect, TypeRegistry};
+use bevy::app::prelude::AppTypeRegistry;
+use bevy::asset::{Asset, Assets, ReflectAsset};
+use bevy::ecs::query::ReadOnlyWorldQuery;
+use bevy::ecs::system::CommandQueue;
+use bevy::ecs::{component::ComponentId, prelude::*};
+use bevy::hierarchy::{Children, Parent};
+use bevy::reflect::{Reflect, TypeRegistry};
 use pretty_type_name::pretty_type_name;
 
 pub(crate) mod errors;
@@ -57,7 +57,7 @@ use crate::restricted_world_view::RestrictedWorldView;
 
 /// Display a single [`&mut dyn Reflect`](bevy_reflect::Reflect).
 ///
-/// If you are wondering why this function takes in a [`&mut World`](bevy_ecs::world::World), it's so that if the value contains e.g. a
+/// If you are wondering why this function takes in a [`&mut World`](bevy::ecs::world::World), it's so that if the value contains e.g. a
 /// `Handle<StandardMaterial>` it can look up the corresponding asset resource and display the asset value inline.
 ///
 /// If all you're displaying is a simple value without any references into the bevy world, consider just using
@@ -535,9 +535,9 @@ pub fn ui_for_entities_shared_components(
 pub mod by_type_id {
     use std::any::TypeId;
 
-    use bevy_asset::{HandleId, HandleUntyped, ReflectAsset, ReflectHandle};
-    use bevy_ecs::{prelude::*, system::CommandQueue};
-    use bevy_reflect::TypeRegistry;
+    use bevy::asset::{HandleId, HandleUntyped, ReflectAsset, ReflectHandle};
+    use bevy::ecs::{prelude::*, system::CommandQueue};
+    use bevy::reflect::TypeRegistry;
 
     use crate::{
         reflect_inspector::{Context, InspectorUi},
@@ -686,8 +686,8 @@ impl<'a, 'c> InspectorUi<'a, 'c> {
 pub mod short_circuit {
     use std::any::{Any, TypeId};
 
-    use bevy_asset::ReflectAsset;
-    use bevy_reflect::Reflect;
+    use bevy::asset::ReflectAsset;
+    use bevy::reflect::Reflect;
 
     use crate::reflect_inspector::{Context, InspectorUi};
 

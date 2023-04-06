@@ -1,9 +1,9 @@
 use std::collections::HashSet;
 
-use bevy_app::AppTypeRegistry;
-use bevy_ecs::{prelude::*, query::ReadOnlyWorldQuery};
-use bevy_hierarchy::{Children, Parent};
-use bevy_reflect::TypeRegistry;
+use bevy::app::AppTypeRegistry;
+use bevy::ecs::{prelude::*, query::ReadOnlyWorldQuery};
+use bevy::hierarchy::{Children, Parent};
+use bevy::reflect::TypeRegistry;
 use egui::{CollapsingHeader, RichText};
 
 use crate::utils::guess_entity_name;

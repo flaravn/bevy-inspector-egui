@@ -4,7 +4,7 @@ use bevy_inspector_egui::{
     inspector_options::{std_options::NumberOptions, Target},
     InspectorOptions,
 };
-use bevy_reflect::{FromType, Reflect};
+use bevy::reflect::{FromType, Reflect};
 
 #[test]
 fn generic_without_options() {

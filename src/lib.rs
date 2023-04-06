@@ -139,15 +139,15 @@ mod utils;
 pub use bevy_egui;
 pub use egui;
 
-/// [`bevy_app::Plugin`] used to register default [`struct@InspectorOptions`] and [`InspectorEguiImpl`](crate::inspector_egui_impls::InspectorEguiImpl)s
+/// [`bevy::app::Plugin`] used to register default [`struct@InspectorOptions`] and [`InspectorEguiImpl`](crate::inspector_egui_impls::InspectorEguiImpl)s
 pub struct DefaultInspectorConfigPlugin;
-impl bevy_app::Plugin for DefaultInspectorConfigPlugin {
-    fn build(&self, app: &mut bevy_app::App) {
+impl bevy::app::Plugin for DefaultInspectorConfigPlugin {
+    fn build(&self, app: &mut bevy::app::App) {
         if app.is_plugin_added::<Self>() {
             return;
         }
 
-        let type_registry = app.world.resource::<bevy_app::AppTypeRegistry>();
+        let type_registry = app.world.resource::<bevy::app::AppTypeRegistry>();
         let mut type_registry = type_registry.write();
 
         inspector_options::default_options::register_default_options(&mut type_registry);
@@ -162,7 +162,7 @@ pub use inspector_options::InspectorOptions;
 
 #[doc(hidden)]
 pub mod __macro_exports {
-    pub use bevy_reflect;
+    pub use bevy::reflect;
 }
 
 /// Reexports of commonly used types

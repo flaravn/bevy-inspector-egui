@@ -1,4 +1,6 @@
-use bevy_ecs::entity::Entity;
+use bevy::ecs::entity::Entity;
+use bevy::math::Quat;
+use bevy::reflect::{FromType, Reflect};
 use bevy_inspector_egui::{
     inspector_options::{
         std_options::{EntityDisplay, EntityOptions, NumberOptions, QuatDisplay, QuatOptions},
@@ -6,8 +8,6 @@ use bevy_inspector_egui::{
     },
     InspectorOptions,
 };
-use bevy_math::Quat;
-use bevy_reflect::{FromType, Reflect};
 
 #[test]
 fn expr_attribute() {

@@ -1,9 +1,9 @@
+use bevy::pbr::PbrBundle;
 use bevy::prelude::*;
+use bevy::window::PrimaryWindow;
 use bevy_egui::EguiContext;
 use bevy_inspector_egui::inspector_options::std_options::NumberDisplay;
 use bevy_inspector_egui::{prelude::*, DefaultInspectorConfigPlugin};
-use bevy_pbr::PbrBundle;
-use bevy_window::PrimaryWindow;
 
 #[derive(Reflect, Default, InspectorOptions)]
 #[reflect(InspectorOptions)]

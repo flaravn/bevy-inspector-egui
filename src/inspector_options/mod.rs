@@ -2,7 +2,7 @@
 
 use std::{any::Any, collections::HashMap};
 
-use bevy_reflect::{FromType, TypeData};
+use bevy::reflect::{FromType, TypeData};
 
 pub(crate) mod default_options;
 
@@ -27,7 +27,7 @@ pub use bevy_inspector_egui_derive::InspectorOptions;
 /// Comes with a [derive macro](derive@InspectorOptions), which generates a `FromType<T> for InspectorOptions` impl:
 /// ```rust
 /// use bevy_inspector_egui::prelude::*;
-/// use bevy_reflect::Reflect;
+/// use bevy::reflect::Reflect;
 ///
 /// #[derive(Reflect, Default, InspectorOptions)]
 /// #[reflect(InspectorOptions)]

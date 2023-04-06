@@ -1,7 +1,7 @@
-use bevy_asset::{AssetServer, Assets, Handle, HandleId};
-use bevy_ecs::{entity::Entity, system::CommandQueue};
-use bevy_render::mesh::Mesh;
-use bevy_render::{color::Color, view::RenderLayers};
+use bevy::asset::{AssetServer, Assets, Handle, HandleId};
+use bevy::ecs::{entity::Entity, system::CommandQueue};
+use bevy::render::mesh::Mesh;
+use bevy::render::{color::Color, view::RenderLayers};
 use egui::{ecolor::Hsva, Color32};
 use std::any::{Any, TypeId};
 
@@ -53,7 +53,7 @@ pub fn entity_ui(
                     if options.despawnable && world.contains_entity(entity) {
                         if let Some(queue) = queue {
                             if egui_utils::label_button(ui, "✖ Despawn", egui::Color32::RED) {
-                                queue.push(bevy_ecs::system::Despawn { entity });
+                                queue.push(bevy::ecs::system::Despawn { entity });
                             }
                         }
                     }
@@ -155,8 +155,8 @@ fn mesh_ui_inner(mesh: &Mesh, ui: &mut egui::Ui) {
         if let Some(indices) = mesh.indices() {
             ui.label("Indices");
             let len = match indices {
-                bevy_render::mesh::Indices::U16(vec) => vec.len(),
-                bevy_render::mesh::Indices::U32(vec) => vec.len(),
+                bevy::render::mesh::Indices::U16(vec) => vec.len(),
+                bevy::render::mesh::Indices::U32(vec) => vec.len(),
             };
             ui.label(len.to_string());
             ui.end_row();

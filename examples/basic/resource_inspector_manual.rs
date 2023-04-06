@@ -1,9 +1,9 @@
 use bevy::prelude::*;
+use bevy::window::PrimaryWindow;
 use bevy_egui::EguiContext;
 use bevy_inspector_egui::bevy_egui::EguiPlugin;
 use bevy_inspector_egui::prelude::*;
 use bevy_inspector_egui::DefaultInspectorConfigPlugin;
-use bevy_window::PrimaryWindow;
 
 #[derive(Reflect, Resource, Default, InspectorOptions)]
 #[reflect(Resource, InspectorOptions)]

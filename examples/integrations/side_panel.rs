@@ -1,9 +1,9 @@
+use bevy::window::PrimaryWindow;
 use bevy::{input::common_conditions::input_toggle_active, prelude::*};
 use bevy_egui::{EguiContext, EguiPlugin};
 use bevy_inspector_egui::{
     bevy_inspector::hierarchy::SelectedEntities, DefaultInspectorConfigPlugin,
 };
-use bevy_window::PrimaryWindow;
 
 fn main() {
     App::new()

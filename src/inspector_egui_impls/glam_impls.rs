@@ -1,7 +1,7 @@
 use std::any::Any;
 
-use bevy_math::{prelude::*, DMat2, DMat3, DMat4, DVec2, DVec3, DVec4, Mat3A, Vec3A};
-use bevy_reflect::Reflect;
+use bevy::math::{prelude::*, DMat2, DMat3, DMat4, DVec2, DVec3, DVec4, Mat3A, Vec3A};
+use bevy::reflect::Reflect;
 
 use crate::inspector_options::std_options::NumberOptions;
 use crate::reflect_inspector::InspectorUi;
@@ -181,8 +181,8 @@ mat_ui!(dmat4_ui dmat4_ui_readonly DMat4: x_axis y_axis z_axis w_axis);
 pub mod quat {
     use std::any::Any;
 
+    use bevy::math::{prelude::*, EulerRot};
     use bevy_egui::egui;
-    use bevy_math::{prelude::*, EulerRot};
 
     use crate::{
         inspector_options::std_options::{QuatDisplay, QuatOptions},

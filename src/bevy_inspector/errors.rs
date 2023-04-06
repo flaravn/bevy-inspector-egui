@@ -1,8 +1,8 @@
 use std::{any::TypeId, borrow::Cow};
 
-use bevy_asset::HandleId;
-use bevy_ecs::entity::Entity;
-use bevy_reflect::TypeRegistry;
+use bevy::asset::HandleId;
+use bevy::ecs::entity::Entity;
+use bevy::reflect::TypeRegistry;
 use egui::FontId;
 
 use crate::{egui_utils::layout_job, restricted_world_view::Error};

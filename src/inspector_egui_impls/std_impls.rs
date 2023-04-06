@@ -1,6 +1,6 @@
 use std::{borrow::Cow, ops::AddAssign, time::Instant};
 
-use bevy_reflect::Reflect;
+use bevy::reflect::Reflect;
 use egui::{DragValue, RichText};
 
 use super::{change_slider, iter_all_eq, InspectorUi};

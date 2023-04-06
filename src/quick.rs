@@ -8,13 +8,16 @@
 
 use std::{marker::PhantomData, sync::Mutex};
 
-use bevy_app::Plugin;
-use bevy_asset::Asset;
-use bevy_ecs::prelude::*;
-use bevy_ecs::{query::ReadOnlyWorldQuery, schedule::BoxedCondition, system::ReadOnlySystem};
+use bevy::app::Plugin;
+use bevy::asset::Asset;
+use bevy::ecs::component::Tick;
+use bevy::ecs::{query::ReadOnlyWorldQuery, schedule::BoxedCondition, system::ReadOnlySystem};
+use bevy::prelude::*;
+
+use bevy::reflect::Reflect;
+use bevy::window::PrimaryWindow;
 use bevy_egui::{EguiContext, EguiPlugin};
-use bevy_reflect::Reflect;
-use bevy_window::PrimaryWindow;
+
 use pretty_type_name::pretty_type_name;
 
 use crate::{bevy_inspector, DefaultInspectorConfigPlugin};
@@ -57,7 +60,7 @@ impl WorldInspectorPlugin {
 }
 
 impl Plugin for WorldInspectorPlugin {
-    fn build(&self, app: &mut bevy_app::App) {
+    fn build(&self, app: &mut bevy::app::App) {
         if !app.is_plugin_added::<DefaultInspectorConfigPlugin>() {
             app.add_plugin(DefaultInspectorConfigPlugin);
         }
@@ -90,7 +93,7 @@ fn world_inspector_ui(world: &mut World) {
 }
 
 /// Plugin displaying an egui window for a single resource.
-/// Remember to insert the resource and call [`App::register_type`](bevy_app::App::register_type).
+/// Remember to insert the resource and call [`App::register_type`](bevy::app::App::register_type).
 ///
 /// You can use [`ResourceInspectorPlugin::run_if`] to control when the window is shown, for example
 /// in combination with `input_toggle_active`.
@@ -148,7 +151,7 @@ impl<T> ResourceInspectorPlugin<T> {
 }
 
 impl<T: Resource + Reflect> Plugin for ResourceInspectorPlugin<T> {
-    fn build(&self, app: &mut bevy_app::App) {
+    fn build(&self, app: &mut bevy::app::App) {
         if !app.is_plugin_added::<DefaultInspectorConfigPlugin>() {
             app.add_plugin(DefaultInspectorConfigPlugin);
         }
@@ -161,7 +164,7 @@ impl<T: Resource + Reflect> Plugin for ResourceInspectorPlugin<T> {
         if let Some(condition) = condition {
             system = system.run_if(BoxedConditionHelper(condition));
         }
-        app.add_system(system);
+        app.add_systems(Update, system);
     }
 }
 
@@ -182,7 +185,7 @@ fn inspector_ui<T: Resource + Reflect>(world: &mut World) {
 }
 
 /// Plugin displaying an egui window for an app state.
-/// Remember to call [`App::add_state`](bevy_app::App::add_state) .
+/// Remember to call [`App::add_state`](bevy::app::App::add_state) .
 ///
 /// You can use [`StateInspectorPlugin::run_if`] to control when the window is shown, for example
 /// in combination with `input_toggle_active`.
@@ -236,7 +239,7 @@ impl<T> StateInspectorPlugin<T> {
 }
 
 impl<T: States + Reflect> Plugin for StateInspectorPlugin<T> {
-    fn build(&self, app: &mut bevy_app::App) {
+    fn build(&self, app: &mut bevy::app::App) {
         if !app.is_plugin_added::<DefaultInspectorConfigPlugin>() {
             app.add_plugin(DefaultInspectorConfigPlugin);
         }
@@ -313,7 +316,7 @@ impl<A> AssetInspectorPlugin<A> {
 }
 
 impl<A: Asset + Reflect> Plugin for AssetInspectorPlugin<A> {
-    fn build(&self, app: &mut bevy_app::App) {
+    fn build(&self, app: &mut bevy::app::App) {
         if !app.is_plugin_added::<DefaultInspectorConfigPlugin>() {
             app.add_plugin(DefaultInspectorConfigPlugin);
         }
@@ -388,7 +391,7 @@ impl<F: 'static> Plugin for FilterQueryInspectorPlugin<F>
 where
     F: ReadOnlyWorldQuery,
 {
-    fn build(&self, app: &mut bevy_app::App) {
+    fn build(&self, app: &mut bevy::app::App) {
         if !app.is_plugin_added::<DefaultInspectorConfigPlugin>() {
             app.add_plugin(DefaultInspectorConfigPlugin);
         }
@@ -435,13 +438,13 @@ impl System for BoxedConditionHelper {
         self.0.type_id()
     }
 
-    fn component_access(&self) -> &bevy_ecs::query::Access<bevy_ecs::component::ComponentId> {
+    fn component_access(&self) -> &bevy::ecs::query::Access<bevy::ecs::component::ComponentId> {
         self.0.component_access()
     }
 
     fn archetype_component_access(
         &self,
-    ) -> &bevy_ecs::query::Access<bevy_ecs::archetype::ArchetypeComponentId> {
+    ) -> &bevy::ecs::query::Access<bevy::ecs::archetype::ArchetypeComponentId> {
         self.0.archetype_component_access()
     }
 
@@ -470,15 +473,23 @@ impl System for BoxedConditionHelper {
         self.0.update_archetype_component_access(world)
     }
 
-    fn check_change_tick(&mut self, change_tick: u32) {
+    fn check_change_tick(&mut self, change_tick: Tick) {
         self.0.check_change_tick(change_tick)
     }
 
+    fn get_last_run(&self) -> Tick {
+        todo!()
+    }
+
+    fn set_last_run(&mut self, last_run: Tick) {
+        todo!()
+    }
+    /*
     fn get_last_change_tick(&self) -> u32 {
         self.0.get_last_change_tick()
     }
 
     fn set_last_change_tick(&mut self, last_change_tick: u32) {
         self.0.set_last_change_tick(last_change_tick)
-    }
+    } */
 }

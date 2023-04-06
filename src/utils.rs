@@ -1,5 +1,5 @@
-use bevy_ecs::change_detection::{DetectChangesMut, MutUntyped};
-use bevy_ecs::ptr::PtrMut;
+use bevy::ecs::change_detection::{DetectChangesMut, MutUntyped};
+use bevy::ecs::ptr::PtrMut;
 
 // workaround for https://github.com/bevyengine/bevy/pull/6430
 pub fn mut_untyped_split<'a>(mut mut_untyped: MutUntyped<'a>) -> (PtrMut<'a>, impl FnOnce() + 'a) {
@@ -12,8 +12,8 @@ pub fn mut_untyped_split<'a>(mut mut_untyped: MutUntyped<'a>) -> (PtrMut<'a>, im
 }
 
 pub mod guess_entity_name {
-    use bevy_core::Name;
-    use bevy_ecs::{archetype::Archetype, prelude::*, world::unsafe_world_cell::UnsafeWorldCell};
+    use bevy::core::Name;
+    use bevy::ecs::{archetype::Archetype, prelude::*, world::unsafe_world_cell::UnsafeWorldCell};
 
     use crate::restricted_world_view::RestrictedWorldView;
 

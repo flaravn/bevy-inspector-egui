@@ -4,10 +4,10 @@ use std::{
     sync::Mutex,
 };
 
-use bevy_asset::{Assets, Handle};
+use bevy::asset::{Assets, Handle};
+use bevy::reflect::Reflect;
+use bevy::render::texture::Image;
 use bevy_egui::EguiUserTextures;
-use bevy_reflect::Reflect;
-use bevy_render::texture::Image;
 use once_cell::sync::Lazy;
 use pretty_type_name::pretty_type_name;
 
