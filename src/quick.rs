@@ -69,11 +69,12 @@ impl Plugin for WorldInspectorPlugin {
         }
 
         let condition = self.condition.lock().unwrap().take();
-        let mut system = world_inspector_ui.into_config();
+        let system = world_inspector_ui;
         if let Some(condition) = condition {
-            system = system.run_if(BoxedConditionHelper(condition));
+            app.add_systems(Update, system.run_if(BoxedConditionHelper(condition)));
+        } else {
+            app.add_systems(Update, system);
         }
-        app.add_system(system);
     }
 }
 
@@ -160,11 +161,12 @@ impl<T: Resource + Reflect> Plugin for ResourceInspectorPlugin<T> {
         }
 
         let condition = self.condition.lock().unwrap().take();
-        let mut system = inspector_ui::<T>.into_config();
+        let system = inspector_ui::<T>;
         if let Some(condition) = condition {
-            system = system.run_if(BoxedConditionHelper(condition));
+            app.add_systems(Update, system.run_if(BoxedConditionHelper(condition)));
+        } else {
+            app.add_systems(Update, system);
         }
-        app.add_systems(Update, system);
     }
 }
 
@@ -248,11 +250,12 @@ impl<T: States + Reflect> Plugin for StateInspectorPlugin<T> {
         }
 
         let condition = self.condition.lock().unwrap().take();
-        let mut system = state_ui::<T>.into_config();
+        let system = state_ui::<T>;
         if let Some(condition) = condition {
-            system = system.run_if(BoxedConditionHelper(condition));
+            app.add_systems(Update, system.run_if(BoxedConditionHelper(condition)));
+        } else {
+            app.add_systems(Update, system);
         }
-        app.add_system(system);
     }
 }
 
@@ -325,11 +328,12 @@ impl<A: Asset + Reflect> Plugin for AssetInspectorPlugin<A> {
         }
 
         let condition = self.condition.lock().unwrap().take();
-        let mut system = asset_inspector_ui::<A>.into_config();
+        let system = asset_inspector_ui::<A>;
         if let Some(condition) = condition {
-            system = system.run_if(BoxedConditionHelper(condition));
+            app.add_systems(Update, system.run_if(BoxedConditionHelper(condition)));
+        } else {
+            app.add_systems(Update, system);
         }
-        app.add_system(system);
     }
 }
 
@@ -400,11 +404,12 @@ where
         }
 
         let condition = self.condition.lock().unwrap().take();
-        let mut system = IntoSystemConfig::into_config(entity_query_ui::<F>);
+        let system = entity_query_ui::<F>;
         if let Some(condition) = condition {
-            system = system.run_if(BoxedConditionHelper(condition));
+            app.add_systems(Update, system.run_if(BoxedConditionHelper(condition)));
+        } else {
+            app.add_systems(Update, system);
         }
-        app.add_system(system);
     }
 }
 

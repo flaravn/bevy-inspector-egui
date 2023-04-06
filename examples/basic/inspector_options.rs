@@ -62,7 +62,7 @@ fn main() {
         .register_type::<Shape>()
         .register_type::<UiData>()
         .add_startup_system(setup)
-        .add_system(ui_example)
+        .add_systems(Update, ui_example)
         .run();
 }
 
