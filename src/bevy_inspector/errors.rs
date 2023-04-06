@@ -2,7 +2,6 @@ use std::{any::TypeId, borrow::Cow};
 
 use bevy::asset::HandleId;
 use bevy::ecs::entity::Entity;
-use bevy::reflect::TypeRegistry;
 use egui::FontId;
 
 use crate::{egui_utils::layout_job, restricted_world_view::Error};
