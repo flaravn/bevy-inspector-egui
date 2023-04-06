@@ -161,7 +161,7 @@ pub use inspector_options::InspectorOptions;
 
 #[doc(hidden)]
 pub mod __macro_exports {
-    pub use bevy::reflect;
+    pub use bevy;
 }
 
 /// Reexports of commonly used types

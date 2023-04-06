@@ -19,7 +19,7 @@ pub fn inspectable(input: proc_macro::TokenStream) -> proc_macro::TokenStream {
 }
 
 fn expand_struct(input: &DeriveInput, data: &DataStruct) -> syn::Result<TokenStream> {
-    let bevy_reflect = quote! { bevy_inspector_egui::__macro_exports::bevy_reflect };
+    let bevy_reflect = quote! { bevy_inspector_egui::__macro_exports::bevy::reflect };
 
     let fields = data
         .fields
@@ -70,7 +70,7 @@ fn expand_struct(input: &DeriveInput, data: &DataStruct) -> syn::Result<TokenStr
 }
 
 fn expand_enum(input: &DeriveInput, data: &DataEnum) -> syn::Result<TokenStream> {
-    let bevy_reflect = quote! { bevy_inspector_egui::__macro_exports::bevy_reflect };
+    let bevy_reflect = quote! { bevy_inspector_egui::__macro_exports::bevy::reflect };
 
     let fields = data
         .variants
