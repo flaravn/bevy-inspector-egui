@@ -483,11 +483,11 @@ impl System for BoxedConditionHelper {
     }
 
     fn get_last_run(&self) -> Tick {
-        todo!()
+        self.0.get_last_run()
     }
 
     fn set_last_run(&mut self, last_run: Tick) {
-        todo!()
+        self.0.set_last_run(last_run)
     }
     /*
     fn get_last_change_tick(&self) -> u32 {
