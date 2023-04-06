@@ -25,20 +25,14 @@ fn main() {
         .add_plugin(bevy_egui::EguiPlugin)
         // .add_plugins(bevy_mod_picking::plugins::DefaultPickingPlugins)
         .insert_resource(UiState::new())
-        .add_startup_system(setup)
+        .add_systems(Startup, setup)
         .add_systems(
-            Update,
+            PostUpdate,
             show_ui_system
-                .in_base_set(CoreSet::PostUpdate)
                 .before(EguiSet::ProcessOutput)
                 .before(bevy::transform::TransformSystem::TransformPropagate),
         )
-        .add_systems(
-            Update,
-            set_camera_viewport
-                .in_base_set(CoreSet::PostUpdate)
-                .after(show_ui_system),
-        )
+        .add_systems(PostUpdate, set_camera_viewport.after(show_ui_system))
         .add_systems(Update, set_gizmo_mode)
         // .add_systems(Update, auto_add_raycast_target)
         // .add_systems(Update, handle_pick_events)
@@ -203,7 +197,7 @@ impl egui_dock::TabViewer for TabViewer<'_> {
     type Tab = EguiWindow;
 
     fn ui(&mut self, ui: &mut egui::Ui, window: &mut Self::Tab) {
-        let type_registry = self.world.resource::<AppTypeRegistryInternal>().0.clone();
+        let type_registry = self.world.resource::<AppTypeRegistry>().0.clone();
         let type_registry = type_registry.read();
 
         match window {
