@@ -1,7 +1,7 @@
 //! UI implementations for leaf types
 
 use crate::reflect_inspector::{errors::no_multiedit, InspectorUi};
-use bevy::reflect::{Reflect, TypeRegistry};
+use bevy::reflect::{Reflect, TypeRegistryInternal};
 use bevy::utils::Instant;
 use std::{
     any::{Any, TypeId},
@@ -26,7 +26,7 @@ type InspectorEguiImplFnMany = for<'a> fn(
     &dyn Fn(&mut dyn Reflect) -> &mut dyn Reflect,
 ) -> bool;
 
-/// Function pointers for displaying a concrete type, to be registered in the [`TypeRegistry`].
+/// Function pointers for displaying a concrete type, to be registered in the [`TypeRegistryInternal`].
 ///
 /// This can used for leaf types like `u8` or `String`, as well as people who want to completely customize the way
 /// to display a certain type.
@@ -97,7 +97,7 @@ fn many_unimplemented<T: Any>(
 }
 
 fn add_no_many<T: 'static>(
-    type_registry: &mut TypeRegistry,
+    type_registry: &mut TypeRegistryInternal,
     fn_mut: InspectorEguiImplFn,
     fn_readonly: InspectorEguiImplFnReadonly,
 ) {
@@ -111,7 +111,7 @@ fn add_no_many<T: 'static>(
         ));
 }
 fn add<T: 'static>(
-    type_registry: &mut TypeRegistry,
+    type_registry: &mut TypeRegistryInternal,
     fn_mut: InspectorEguiImplFn,
     fn_readonly: InspectorEguiImplFnReadonly,
     fn_many: InspectorEguiImplFnMany,
@@ -124,7 +124,7 @@ fn add<T: 'static>(
 
 /// Register [`InspectorEguiImpl`]s for primitive rust types as well as standard library types
 #[rustfmt::skip]
-pub fn register_std_impls(type_registry: &mut TypeRegistry) {
+pub fn register_std_impls(type_registry: &mut TypeRegistryInternal) {
     add::<f32>(type_registry, std_impls::number_ui::<f32>, std_impls::number_ui_readonly::<f32>, std_impls::number_ui_many::<f32>);
     add::<f64>(type_registry, std_impls::number_ui::<f64>, std_impls::number_ui_readonly::<f64>, std_impls::number_ui_many::<f64>);
     add::<i8>(type_registry, std_impls::number_ui::<i8>, std_impls::number_ui_readonly::<i8>, std_impls::number_ui_many::<i8>);
@@ -146,7 +146,7 @@ pub fn register_std_impls(type_registry: &mut TypeRegistry) {
 
 /// Register [`InspectorEguiImpl`]s for [`bevy::math`](bevy::math)/`glam` types
 #[rustfmt::skip]
-pub fn register_glam_impls(type_registry: &mut TypeRegistry) {
+pub fn register_glam_impls(type_registry: &mut TypeRegistryInternal) {
     add::<bevy::math::Vec2>(type_registry, glam_impls::vec2_ui, glam_impls::vec2_ui_readonly, glam_impls::vec2_ui_many);
     add::<bevy::math::Vec3>(type_registry, glam_impls::vec3_ui, glam_impls::vec3_ui_readonly, glam_impls::vec3_ui_many);
     add::<bevy::math::Vec3A>(type_registry, glam_impls::vec3a_ui, glam_impls::vec3a_ui_readonly, glam_impls::vec3a_ui_many);
@@ -176,10 +176,10 @@ pub fn register_glam_impls(type_registry: &mut TypeRegistry) {
 
 /// Register [`InspectorEguiImpl`]s for `bevy` types
 #[rustfmt::skip]
-pub fn register_bevy_impls(type_registry: &mut TypeRegistry) {
-    add_no_many::<bevy_asset::HandleId>(type_registry, bevy_impls::handle_id_ui, bevy_impls::handle_id_ui_readonly);
-    add_no_many::<bevy_asset::Handle<bevy::render::texture::Image>>(type_registry, image::image_handle_ui, image::image_handle_ui_readonly);
-    add_no_many::<bevy_asset::Handle<bevy::render::mesh::Mesh>>(type_registry, bevy_impls::mesh_ui, bevy_impls::mesh_ui_readonly);
+pub fn register_bevy_impls(type_registry: &mut TypeRegistryInternal) {
+    add_no_many::<bevy::asset::HandleId>(type_registry, bevy_impls::handle_id_ui, bevy_impls::handle_id_ui_readonly);
+    add_no_many::<bevy::asset::Handle<bevy::render::texture::Image>>(type_registry, image::image_handle_ui, image::image_handle_ui_readonly);
+    add_no_many::<bevy::asset::Handle<bevy::render::mesh::Mesh>>(type_registry, bevy_impls::mesh_ui, bevy_impls::mesh_ui_readonly);
     add_no_many::<bevy::ecs::entity::Entity>(type_registry, bevy_impls::entity_ui, bevy_impls::entity_ui_readonly);
     add::<bevy::render::color::Color>(type_registry, bevy_impls::color_ui, bevy_impls::color_ui_readonly, bevy_impls::color_ui_many);
     add::<bevy::render::view::RenderLayers>(type_registry, bevy_impls::render_layers_ui, bevy_impls::render_layers_ui_readonly, bevy_impls::render_layers_ui_many);

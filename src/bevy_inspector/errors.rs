@@ -155,7 +155,10 @@ pub fn no_type_id(ui: &mut egui::Ui, component_name: &str) {
     ui.label(job);
 }
 
-pub fn name_of_type(type_id: TypeId, type_registry: &TypeRegistry) -> Cow<str> {
+pub fn name_of_type(
+    type_id: TypeId,
+    type_registry: &bevy::reflect::TypeRegistryInternal,
+) -> Cow<str> {
     type_registry
         .get(type_id)
         .map(|registration| Cow::Borrowed(registration.short_name()))

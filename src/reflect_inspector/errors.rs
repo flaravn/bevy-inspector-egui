@@ -10,7 +10,7 @@ pub fn reflect_value_no_impl(ui: &mut egui::Ui, type_name: &str) {
         (FontId::proportional(13.0), ", but has no "),
         (FontId::monospace(12.0), "InspectorEguiImpl"),
         (FontId::proportional(13.0), " registered in the "),
-        (FontId::monospace(12.0), "TypeRegistry"),
+        (FontId::monospace(12.0), "TypeRegistryInternal"),
         (FontId::proportional(13.0), " .\n"),
         (FontId::proportional(13.0), "Try calling "),
         (
@@ -74,7 +74,7 @@ pub fn not_in_type_registry(ui: &mut egui::Ui, type_name: &str) {
     let job = layout_job(&[
         (FontId::monospace(12.0), type_name),
         (FontId::proportional(13.0), " is not registered in the "),
-        (FontId::monospace(12.0), "TypeRegistry"),
+        (FontId::monospace(12.0), "TypeRegistryInternal"),
     ]);
 
     ui.label(job);

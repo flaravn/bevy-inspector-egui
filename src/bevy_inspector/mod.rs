@@ -44,7 +44,7 @@ use bevy::ecs::query::ReadOnlyWorldQuery;
 use bevy::ecs::system::CommandQueue;
 use bevy::ecs::{component::ComponentId, prelude::*};
 use bevy::hierarchy::{Children, Parent};
-use bevy::reflect::{Reflect, TypeRegistry};
+use bevy::reflect::{Reflect, TypeRegistry, TypeRegistryInternal};
 use pretty_type_name::pretty_type_name;
 
 pub(crate) mod errors;
@@ -94,8 +94,8 @@ pub fn ui_for_world(world: &mut World, ui: &mut egui::Ui) {
 
 /// Display all reflectable resources in the world
 pub fn ui_for_resources(world: &mut World, ui: &mut egui::Ui) {
-    let type_registry = world.resource::<AppTypeRegistry>().0.clone();
-    let type_registry = type_registry.read();
+    let type_registry_arc = world.resource::<AppTypeRegistry>().0.clone();
+    let type_registry = type_registry_arc.read();
 
     let mut resources: Vec<_> = type_registry
         .iter()
@@ -105,7 +105,7 @@ pub fn ui_for_resources(world: &mut World, ui: &mut egui::Ui) {
     resources.sort_by(|(name_a, ..), (name_b, ..)| name_a.cmp(name_b));
     for (name, type_id) in resources {
         ui.collapsing(&name, |ui| {
-            by_type_id::ui_for_resource(world, type_id, ui, &name, &type_registry);
+            by_type_id::ui_for_resource(world, type_id, ui, &name, &type_registry_arc.read());
         });
     }
 }
@@ -275,7 +275,7 @@ fn ui_for_entity_with_children_inner(
     entity: Entity,
     ui: &mut egui::Ui,
     id: egui::Id,
-    type_registry: &TypeRegistry,
+    type_registry: &TypeRegistryInternal,
 ) {
     let mut queue = CommandQueue::default();
     ui_for_entity_components(
@@ -284,7 +284,7 @@ fn ui_for_entity_with_children_inner(
         entity,
         ui,
         id,
-        type_registry,
+        &type_registry,
     );
 
     let children = world
@@ -314,8 +314,6 @@ fn ui_for_entity_with_children_inner(
 /// Display the components of the given entity
 pub fn ui_for_entity(world: &mut World, entity: Entity, ui: &mut egui::Ui) {
     let type_registry = world.resource::<AppTypeRegistry>().0.clone();
-    let type_registry = type_registry.read();
-
     let entity_name = guess_entity_name(world, entity);
     ui.label(entity_name);
 
@@ -326,7 +324,7 @@ pub fn ui_for_entity(world: &mut World, entity: Entity, ui: &mut egui::Ui) {
         entity,
         ui,
         egui::Id::new(entity),
-        &type_registry,
+        &type_registry.read(),
     );
     queue.apply(world);
 }
@@ -338,7 +336,7 @@ pub(crate) fn ui_for_entity_components(
     entity: Entity,
     ui: &mut egui::Ui,
     id: egui::Id,
-    type_registry: &TypeRegistry,
+    type_registry: &TypeRegistryInternal,
 ) {
     let Some(components) = components_of_entity(world, entity) else {
         errors::entity_does_not_exist(ui, entity);
@@ -370,7 +368,7 @@ pub(crate) fn ui_for_entity_components(
         let (value, is_changed, set_changed) = match component_view.get_entity_component_reflect(
             entity,
             component_type_id,
-            type_registry,
+            &type_registry,
         ) {
             Ok(value) => value,
             Err(e) => {
@@ -387,7 +385,7 @@ pub(crate) fn ui_for_entity_components(
         header.show(ui, |ui| {
             ui.reset_style();
 
-            let inspector_changed = InspectorUi::for_bevy(type_registry, &mut cx)
+            let inspector_changed = InspectorUi::for_bevy(&type_registry, &mut cx)
                 .ui_for_reflect_with_options(value, ui, id.with(component_id), &());
 
             if inspector_changed {
@@ -537,7 +535,7 @@ pub mod by_type_id {
 
     use bevy::asset::{HandleId, HandleUntyped, ReflectAsset, ReflectHandle};
     use bevy::ecs::{prelude::*, system::CommandQueue};
-    use bevy::reflect::TypeRegistry;
+    use bevy::reflect::TypeRegistryInternal;
 
     use crate::{
         reflect_inspector::{Context, InspectorUi},
@@ -552,7 +550,7 @@ pub mod by_type_id {
         resource_type_id: TypeId,
         ui: &mut egui::Ui,
         name_of_type: &str,
-        type_registry: &TypeRegistry,
+        type_registry: &TypeRegistryInternal,
     ) {
         let mut queue = CommandQueue::default();
 
@@ -564,10 +562,10 @@ pub mod by_type_id {
                 world: Some(world_view),
                 queue: Some(&mut queue),
             };
-            let mut env = InspectorUi::for_bevy(type_registry, &mut cx);
+            let mut env = InspectorUi::for_bevy(&type_registry, &mut cx);
 
             let (resource, set_changed) = match resource_view
-                .get_resource_reflect_mut_by_id(resource_type_id, type_registry)
+                .get_resource_reflect_mut_by_id(resource_type_id, &type_registry)
             {
                 Ok(resource) => resource,
                 Err(err) => return errors::show_error(err, ui, name_of_type),
@@ -587,7 +585,7 @@ pub mod by_type_id {
         world: &mut World,
         asset_type_id: TypeId,
         ui: &mut egui::Ui,
-        type_registry: &TypeRegistry,
+        type_registry: &TypeRegistryInternal,
     ) {
         let Some(registration) = type_registry.get(asset_type_id) else {
             return crate::reflect_inspector::errors::not_in_type_registry(ui, &name_of_type(asset_type_id, type_registry));
@@ -632,7 +630,7 @@ pub mod by_type_id {
         asset_type_id: TypeId,
         handle: HandleId,
         ui: &mut egui::Ui,
-        type_registry: &TypeRegistry,
+        type_registry: &TypeRegistryInternal,
     ) {
         let Some(registration) = type_registry.get(asset_type_id) else {
             return crate::reflect_inspector::errors::not_in_type_registry(ui, &name_of_type(asset_type_id, type_registry));
@@ -641,7 +639,7 @@ pub mod by_type_id {
             return errors::no_type_data(ui, &name_of_type(asset_type_id, type_registry), "ReflectAsset");
         };
         let Some(reflect_handle) = type_registry.get_type_data::<ReflectHandle>(reflect_asset.handle_type_id()) else {
-            return errors::no_type_data(ui, &name_of_type(reflect_asset.handle_type_id(), type_registry), "ReflectHandle");
+            return errors::no_type_data(ui, &name_of_type(reflect_asset.handle_type_id(), &type_registry), "ReflectHandle");
         };
 
         let mut ids: Vec<_> = reflect_asset.ids(world).collect();
@@ -659,7 +657,7 @@ pub mod by_type_id {
         let id = egui::Id::new(handle);
         let mut handle = reflect_handle.typed(HandleUntyped::weak(handle));
 
-        let mut env = InspectorUi::for_bevy(type_registry, &mut cx);
+        let mut env = InspectorUi::for_bevy(&type_registry, &mut cx);
         env.ui_for_reflect_with_options(&mut *handle, ui, id, &());
 
         queue.apply(world);
@@ -667,9 +665,9 @@ pub mod by_type_id {
 }
 
 impl<'a, 'c> InspectorUi<'a, 'c> {
-    /// [`InspectorUi`] with short circuiting methods able to display `bevy_asset` [`Handle`](bevy_asset::Handle)s
+    /// [`InspectorUi`] with short circuiting methods able to display `bevy::asset` [`Handle`](bevy::asset::Handle)s
     pub fn for_bevy(
-        type_registry: &'a TypeRegistry,
+        type_registry: &'a TypeRegistryInternal,
         context: &'a mut Context<'c>,
     ) -> InspectorUi<'a, 'c> {
         InspectorUi::new(
@@ -682,7 +680,7 @@ impl<'a, 'c> InspectorUi<'a, 'c> {
     }
 }
 
-/// Short circuiting methods for the [`InspectorUi`] to enable it to display [`Handle`](bevy_asset::Handle)s
+/// Short circuiting methods for the [`InspectorUi`] to enable it to display [`Handle`](bevy::asset::Handle)s
 pub mod short_circuit {
     use std::any::{Any, TypeId};
 
@@ -702,15 +700,14 @@ pub mod short_circuit {
     ) -> Option<bool> {
         if let Some(reflect_handle) = env
             .type_registry
-            .get_type_data::<bevy_asset::ReflectHandle>(Any::type_id(value))
+            .get_type_data::<bevy::asset::ReflectHandle>(Any::type_id(value))
         {
             let handle = reflect_handle
                 .downcast_handle_untyped(value.as_any())
                 .unwrap();
             let handle_id = handle.id();
             let Some(reflect_asset) = env
-            .type_registry
-            .get_type_data::<ReflectAsset>(reflect_handle.asset_type_id())
+           .type_registry.get_type_data::<ReflectAsset>(reflect_handle.asset_type_id())
             else {
                 errors::no_type_data(ui, &name_of_type(reflect_handle.asset_type_id(), env.type_registry), "ReflectAsset");
                 return Some(false);
@@ -773,11 +770,10 @@ pub mod short_circuit {
     ) -> Option<bool> {
         if let Some(reflect_handle) = env
             .type_registry
-            .get_type_data::<bevy_asset::ReflectHandle>(type_id)
+            .get_type_data::<bevy::asset::ReflectHandle>(type_id)
         {
             let Some(reflect_asset) = env
-                .type_registry
-                .get_type_data::<ReflectAsset>(reflect_handle.asset_type_id())
+            .type_registry.get_type_data::<ReflectAsset>(reflect_handle.asset_type_id())
             else {
                 errors::no_type_data(ui, &name_of_type(reflect_handle.asset_type_id(), env.type_registry), "ReflectAsset");
                 return Some(false);
@@ -857,15 +853,14 @@ pub mod short_circuit {
     ) -> Option<()> {
         if let Some(reflect_handle) = env
             .type_registry
-            .get_type_data::<bevy_asset::ReflectHandle>(Any::type_id(value))
+            .get_type_data::<bevy::asset::ReflectHandle>(Any::type_id(value))
         {
             let handle = reflect_handle
                 .downcast_handle_untyped(value.as_any())
                 .unwrap();
             let handle_id = handle.id();
             let Some(reflect_asset) = env
-            .type_registry
-            .get_type_data::<ReflectAsset>(reflect_handle.asset_type_id())
+           .type_registry.get_type_data::<ReflectAsset>(reflect_handle.asset_type_id())
             else {
                 errors::no_type_data(ui, &name_of_type(reflect_handle.asset_type_id(), env.type_registry), "ReflectAsset");
                 return Some(());

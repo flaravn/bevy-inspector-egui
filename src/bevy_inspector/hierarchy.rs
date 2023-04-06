@@ -13,7 +13,6 @@ use crate::utils::guess_entity_name;
 /// Returns `true` if a new entity was selected.
 pub fn hierarchy_ui(world: &mut World, ui: &mut egui::Ui, selected: &mut SelectedEntities) -> bool {
     let type_registry = world.resource::<AppTypeRegistry>().clone();
-    let type_registry = type_registry.read();
 
     Hierarchy {
         world,

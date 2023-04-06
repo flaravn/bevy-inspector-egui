@@ -147,8 +147,7 @@ impl bevy::app::Plugin for DefaultInspectorConfigPlugin {
             return;
         }
 
-        let type_registry = app.world.resource::<bevy::app::AppTypeRegistry>();
-        let mut type_registry = type_registry.write();
+        let mut type_registry = app.world.resource::<bevy::app::AppTypeRegistry>().write();
 
         inspector_options::default_options::register_default_options(&mut type_registry);
         inspector_egui_impls::register_std_impls(&mut type_registry);

@@ -92,7 +92,7 @@ impl InspectorOptions {
     }
 }
 
-/// Wrapper of [`struct@InspectorOptions`] to be stored in the [`TypeRegistry`](bevy_reflect::TypeRegistry)
+/// Wrapper of [`struct@InspectorOptions`] to be stored in the [`TypeRegistryInternal`](bevy_reflect::TypeRegistryInternal)
 #[derive(Clone)]
 pub struct ReflectInspectorOptions(pub InspectorOptions);
 

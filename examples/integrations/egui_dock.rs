@@ -10,7 +10,7 @@ use bevy_inspector_egui::bevy_inspector::{
 use bevy_inspector_egui::DefaultInspectorConfigPlugin;
 // use bevy_mod_picking::backends::egui::EguiPointer;
 // use bevy_mod_picking::prelude::*;
-use bevy::reflect::TypeRegistry;
+use bevy::reflect::TypeRegistryInternal;
 use bevy::render::camera::{CameraProjection, Viewport};
 use bevy::window::PrimaryWindow;
 use bevy_egui::EguiSet;
@@ -26,20 +26,22 @@ fn main() {
         // .add_plugins(bevy_mod_picking::plugins::DefaultPickingPlugins)
         .insert_resource(UiState::new())
         .add_startup_system(setup)
-        .add_system(
+        .add_systems(
+            Update,
             show_ui_system
                 .in_base_set(CoreSet::PostUpdate)
                 .before(EguiSet::ProcessOutput)
                 .before(bevy::transform::TransformSystem::TransformPropagate),
         )
-        .add_system(
+        .add_systems(
+            Update,
             set_camera_viewport
                 .in_base_set(CoreSet::PostUpdate)
                 .after(show_ui_system),
         )
-        .add_system(set_gizmo_mode)
-        // .add_system(auto_add_raycast_target)
-        // .add_system(handle_pick_events)
+        .add_systems(Update, set_gizmo_mode)
+        // .add_systems(Update, auto_add_raycast_target)
+        // .add_systems(Update, handle_pick_events)
         .register_type::<Option<Handle<Image>>>()
         .register_type::<AlphaMode>()
         .run();
@@ -201,7 +203,7 @@ impl egui_dock::TabViewer for TabViewer<'_> {
     type Tab = EguiWindow;
 
     fn ui(&mut self, ui: &mut egui::Ui, window: &mut Self::Tab) {
-        let type_registry = self.world.resource::<AppTypeRegistry>().0.clone();
+        let type_registry = self.world.resource::<AppTypeRegistryInternal>().0.clone();
         let type_registry = type_registry.read();
 
         match window {
@@ -296,7 +298,7 @@ fn draw_gizmo(
 
 fn select_resource(
     ui: &mut egui::Ui,
-    type_registry: &TypeRegistry,
+    type_registry: &TypeRegistryInternal,
     selection: &mut InspectorSelection,
 ) {
     let mut resources: Vec<_> = type_registry
@@ -320,7 +322,7 @@ fn select_resource(
 
 fn select_asset(
     ui: &mut egui::Ui,
-    type_registry: &TypeRegistry,
+    type_registry: &TypeRegistryInternal,
     world: &World,
     selection: &mut InspectorSelection,
 ) {

@@ -5,7 +5,7 @@ use std::any::TypeId;
 use bevy::ecs::{
     change_detection::MutUntyped, prelude::*, world::unsafe_world_cell::UnsafeWorldCell,
 };
-use bevy::reflect::{Reflect, ReflectFromPtr, TypeRegistry};
+use bevy::reflect::{Reflect, ReflectFromPtr, TypeRegistryInternal};
 use smallvec::{smallvec, SmallVec};
 
 #[derive(Debug)]
@@ -315,7 +315,7 @@ impl<'w> RestrictedWorldView<'w> {
     pub fn get_resource_reflect_mut_by_id(
         &mut self,
         type_id: TypeId,
-        type_registry: &TypeRegistry,
+        type_registry: &TypeRegistryInternal,
     ) -> Result<(&'_ mut dyn Reflect, impl FnOnce() + '_), Error> {
         if !self.allows_access_to_resource(type_id) {
             return Err(Error::NoAccessToResource(type_id));
@@ -349,7 +349,7 @@ impl<'w> RestrictedWorldView<'w> {
         &mut self,
         entity: Entity,
         component: TypeId,
-        type_registry: &TypeRegistry,
+        type_registry: &TypeRegistryInternal,
     ) -> Result<(&'_ mut dyn Reflect, bool, impl FnOnce() + '_), Error> {
         if !self.allows_access_to_component((entity, component)) {
             return Err(Error::NoAccessToComponent((entity, component)));
@@ -383,7 +383,7 @@ impl<'w> RestrictedWorldView<'w> {
         &self,
         entity: Entity,
         component: TypeId,
-        type_registry: &TypeRegistry,
+        type_registry: &TypeRegistryInternal,
     ) -> Result<(&'_ mut dyn Reflect, impl FnOnce() + '_), Error> {
         if !self.allows_access_to_component((entity, component)) {
             return Err(Error::NoAccessToComponent((entity, component)));
@@ -413,9 +413,10 @@ impl<'w> RestrictedWorldView<'w> {
 // SAFETY: MutUntyped is of type with `type_id`
 unsafe fn mut_untyped_to_reflect<'a>(
     value: MutUntyped<'a>,
-    type_registry: &TypeRegistry,
+    type_registry: &TypeRegistryInternal,
     type_id: TypeId,
 ) -> Result<(&'a mut dyn Reflect, impl FnOnce() + 'a), Error> {
+
     let registration = type_registry
         .get(type_id)
         .ok_or(Error::NoTypeRegistration(type_id))?;
@@ -436,7 +437,7 @@ mod tests {
     use std::any::TypeId;
 
     use bevy::ecs::prelude::*;
-    use bevy::reflect::{Reflect, TypeRegistry};
+    use bevy::reflect::{Reflect, TypeRegistryInternal};
 
     use super::RestrictedWorldView;
 
@@ -474,7 +475,7 @@ mod tests {
         let (mut a_view, mut world) = world.split_off_resource(TypeId::of::<A>());
         let mut a = a_view.get_resource_mut::<A>().unwrap();
 
-        let mut type_registry = TypeRegistry::empty();
+        let mut type_registry = TypeRegistryInternal::empty();
         type_registry.register::<B>();
         let b = world
             .get_resource_reflect_mut_by_id(TypeId::of::<B>(), &type_registry)
@@ -519,7 +520,7 @@ mod tests {
 
     #[test]
     fn disjoint_component_access() {
-        let mut type_registry = TypeRegistry::empty();
+        let mut type_registry = TypeRegistryInternal::empty();
         type_registry.register::<ComponentA>();
         type_registry.register::<String>();
 

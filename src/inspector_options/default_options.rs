@@ -1,4 +1,4 @@
-use bevy::reflect::{TypeData, TypeInfo, TypeRegistry};
+use bevy::reflect::{TypeData, TypeInfo, TypeRegistryInternal};
 
 use crate::{
     inspector_options::{std_options::NumberOptions, Target},
@@ -8,7 +8,7 @@ use crate::{
 
 #[allow(dead_code)]
 fn insert_options_struct<T: 'static>(
-    type_registry: &mut TypeRegistry,
+    type_registry: &mut TypeRegistryInternal,
     fields: &[(&'static str, &dyn TypeData)],
 ) {
     let Some(registration) = type_registry.get_mut(std::any::TypeId::of::<T>()) else {
@@ -30,7 +30,7 @@ fn insert_options_struct<T: 'static>(
 }
 
 fn insert_options_enum<T: 'static>(
-    type_registry: &mut TypeRegistry,
+    type_registry: &mut TypeRegistryInternal,
     fields: &[(&'static str, &'static str, &dyn TypeData)],
 ) {
     let Some(registration) = type_registry.get_mut(std::any::TypeId::of::<T>()) else {
@@ -62,7 +62,7 @@ fn insert_options_enum<T: 'static>(
     }
 }
 
-pub fn register_default_options(type_registry: &mut TypeRegistry) {
+pub fn register_default_options(type_registry: &mut TypeRegistryInternal) {
     insert_options_enum::<bevy::render::color::Color>(
         type_registry,
         &[
@@ -102,11 +102,11 @@ pub fn register_default_options(type_registry: &mut TypeRegistry) {
 
     #[cfg(feature = "bevy_pbr")]
     {
-        insert_options_struct::<bevy_pbr::AmbientLight>(
+        insert_options_struct::<bevy::pbr::AmbientLight>(
             type_registry,
             &[("brightness", &NumberOptions::<f32>::normalized())],
         );
-        insert_options_struct::<bevy_pbr::PointLight>(
+        insert_options_struct::<bevy::pbr::PointLight>(
             type_registry,
             &[
                 ("intensity", &NumberOptions::<f32>::positive()),
@@ -114,11 +114,11 @@ pub fn register_default_options(type_registry: &mut TypeRegistry) {
                 ("radius", &NumberOptions::<f32>::positive()),
             ],
         );
-        insert_options_struct::<bevy_pbr::DirectionalLight>(
+        insert_options_struct::<bevy::pbr::DirectionalLight>(
             type_registry,
             &[("illuminance", &NumberOptions::<f32>::positive())],
         );
-        insert_options_struct::<bevy_pbr::StandardMaterial>(
+        insert_options_struct::<bevy::pbr::StandardMaterial>(
             type_registry,
             &[
                 (
@@ -130,7 +130,7 @@ pub fn register_default_options(type_registry: &mut TypeRegistry) {
                 ("depth_bias", &NumberOptions::<f32>::positive()),
             ],
         );
-        insert_options_enum::<bevy_pbr::ClusterConfig>(
+        insert_options_enum::<bevy::pbr::ClusterConfig>(
             type_registry,
             &[
                 ("FixedZ", "z_slices", &NumberOptions::<u32>::at_least(1)),

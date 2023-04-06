@@ -3,7 +3,7 @@
 //! # Examples
 //! **Basic usage**
 //! ```rust
-//! use bevy::reflect::{Reflect, TypeRegistry};
+//! use bevy::reflect::{Reflect, TypeRegistryInternal};
 //! use bevy_inspector_egui::reflect_inspector::{ui_for_value, InspectorUi, Context};
 //!
 //! #[derive(Reflect)]
@@ -11,7 +11,7 @@
 //!     value: f32,
 //! }
 //!
-//! fn ui(data: &mut Data, ui: &mut egui::Ui, type_registry: &TypeRegistry) {
+//! fn ui(data: &mut Data, ui: &mut egui::Ui, type_registry: &TypeRegistryInternal) {
 //!     let mut cx = Context::default(); // empty context, with no access to the bevy world
 //!     let mut env = InspectorUi::new_no_short_circuit(type_registry, &mut cx); // no short circuiting, couldn't display `Handle<StandardMaterial>`
 //!
@@ -25,7 +25,7 @@
 //!
 //! **Bevy specific usage**
 //! ```rust
-//! use bevy::reflect::{Reflect, TypeRegistry};
+//! use bevy::reflect::{Reflect, TypeRegistryInternal};
 //! use bevy_inspector_egui::reflect_inspector::{InspectorUi, Context};
 //!
 //! use bevy::ecs::prelude::*;
@@ -37,11 +37,11 @@
 //!     material: Handle<StandardMaterial>,
 //! }
 //!
-//! fn ui(mut data: Mut<Data>, ui: &mut egui::Ui, world: &mut World, type_registry: &TypeRegistry) {
+//! fn ui(mut data: Mut<Data>, ui: &mut egui::Ui, world: &mut World, type_registry: &TypeRegistryInternal) {
 //!     let mut cx = Context {
 //!         world: Some(world.into()),
 //!     };
-//!     let mut env = InspectorUi::for_bevy(type_registry, &mut cx);
+//!     let mut env = InspectorUi::for_bevy(&type_registry, &mut cx);
 //!
 //!     // alternatively
 //!     // use crate::bevy_inspector::short_circuit;
@@ -62,7 +62,7 @@ use bevy::reflect::{std_traits::ReflectDefault, DynamicStruct};
 use bevy::reflect::{
     Array, DynamicEnum, DynamicTuple, DynamicVariant, Enum, EnumInfo, List, ListInfo, Map, Reflect,
     ReflectMut, ReflectRef, Struct, StructInfo, Tuple, TupleInfo, TupleStruct, TupleStructInfo,
-    TypeInfo, TypeRegistry, ValueInfo, VariantInfo, VariantType,
+    TypeInfo, TypeRegistryInternal, ValueInfo, VariantInfo, VariantType,
 };
 use egui::Grid;
 use std::any::{Any, TypeId};
@@ -78,7 +78,7 @@ pub(crate) mod errors;
 pub fn ui_for_value(
     value: &mut dyn Reflect,
     ui: &mut egui::Ui,
-    type_registry: &TypeRegistry,
+    type_registry: &TypeRegistryInternal,
 ) -> bool {
     InspectorUi::new_no_short_circuit(type_registry, &mut Context::default())
         .ui_for_reflect(value, ui)
@@ -89,7 +89,11 @@ pub fn ui_for_value(
 /// as they would need to have access to the `World`.
 ///
 /// Use [`InspectorUi::new`] instead to provide context or use one of the methods in [`bevy_inspector`](crate::bevy_inspector).
-pub fn ui_for_value_readonly(value: &dyn Reflect, ui: &mut egui::Ui, type_registry: &TypeRegistry) {
+pub fn ui_for_value_readonly(
+    value: &dyn Reflect,
+    ui: &mut egui::Ui,
+    type_registry: &TypeRegistryInternal,
+) {
     InspectorUi::new_no_short_circuit(type_registry, &mut Context::default())
         .ui_for_reflect_readonly(value, ui);
 }
@@ -141,8 +145,8 @@ pub type ShortCircuitFnMany = fn(
 ) -> Option<bool>;
 
 pub struct InspectorUi<'a, 'c> {
-    /// Reference to the [`TypeRegistry`]
-    pub type_registry: &'a TypeRegistry,
+    /// Reference to the [`TypeRegistryInternal`]
+    pub type_registry: &'a TypeRegistryInternal,
     /// [`Context`] with additional data that can be used to display values
     pub context: &'a mut Context<'c>,
 
@@ -156,7 +160,7 @@ pub struct InspectorUi<'a, 'c> {
 
 impl<'a, 'c> InspectorUi<'a, 'c> {
     pub fn new(
-        type_registry: &'a TypeRegistry,
+        type_registry: &'a TypeRegistryInternal,
         context: &'a mut Context<'c>,
         short_circuit: Option<ShortCircuitFn>,
         short_circuit_readonly: Option<ShortCircuitFnReadonly>,
@@ -172,7 +176,7 @@ impl<'a, 'c> InspectorUi<'a, 'c> {
     }
 
     pub fn new_no_short_circuit(
-        type_registry: &'a TypeRegistry,
+        type_registry: &'a TypeRegistryInternal,
         context: &'a mut Context<'c>,
     ) -> Self {
         InspectorUi::new(type_registry, context, None, None, None)
@@ -962,7 +966,7 @@ impl InspectorUi<'_, '_> {
             let mut variant = info.variant_at(variant_index).unwrap();
 
             ui.vertical(|ui| {
-                let variant_changed = self.ui_for_enum_variant_select(id, ui, variant_index, info);
+                let variant_changed = self.ui_for_enum_variant_select(id, ui, variant_index, &info);
                 if let Some((new_variant_idx, dynamic_enum)) = variant_changed {
                     changed = true;
                     variant = info.variant_at(new_variant_idx).unwrap();
@@ -1059,7 +1063,7 @@ impl InspectorUi<'_, '_> {
         id: egui::Id,
         ui: &mut egui::Ui,
         active_variant_idx: usize,
-        info: &bevy_reflect::EnumInfo,
+        info: &bevy::reflect::EnumInfo,
     ) -> Option<(usize, DynamicEnum)> {
         let mut changed_variant = None;
 
@@ -1298,7 +1302,7 @@ fn maybe_grid_readonly_label_if(
     }
 }
 
-fn is_variant_constructable(type_registry: &TypeRegistry, variant: &VariantInfo) -> bool {
+fn is_variant_constructable(type_registry: &TypeRegistryInternal, variant: &VariantInfo) -> bool {
     let type_id_is_constructable = |type_id: TypeId| {
         type_registry
             .get_type_data::<ReflectDefault>(type_id)
