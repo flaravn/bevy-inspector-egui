@@ -17,7 +17,5 @@ quote = "1.0"
 proc-macro2 = "1.0"
 
 [dev-dependencies]
-bevy_ecs = { git = "https://github.com/flaravn/bevy.git", branch = "flara-patches", default-features = false }
-bevy_math = { git = "https://github.com/flaravn/bevy.git", branch = "flara-patches", default-features = false }
-bevy_reflect = { git = "https://github.com/flaravn/bevy.git", branch = "flara-patches", default-features = false }
+bevy = { git = "https://github.com/flaravn/bevy.git", branch = "flara-patches", default-features = false }
 bevy-inspector-egui = { path = ".." }
