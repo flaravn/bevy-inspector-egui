@@ -8,7 +8,7 @@ fn main() {
         .add_plugin(
             WorldInspectorPlugin::default().run_if(input_toggle_active(true, KeyCode::Escape)),
         )
-        .add_startup_system(setup)
+        .add_systems(Startup, setup)
         .run();
 }
 

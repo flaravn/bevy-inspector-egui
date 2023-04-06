@@ -9,18 +9,9 @@ fn main() {
         .register_type::<AppState>()
         .add_plugin(StateInspectorPlugin::<AppState>::default())
         .add_systems(Startup, setup)
-        .add_systems(
-            Update,
-            set_color::<158, 228, 147>.in_schedule(OnEnter(AppState::A)),
-        )
-        .add_systems(
-            Update,
-            set_color::<172, 200, 192>.in_schedule(OnEnter(AppState::B)),
-        )
-        .add_systems(
-            Update,
-            set_color::<194, 148, 138>.in_schedule(OnEnter(AppState::C)),
-        )
+        .add_systems(OnEnter(AppState::A), set_color::<158, 228, 147>)
+        .add_systems(OnEnter(AppState::B), set_color::<172, 200, 192>)
+        .add_systems(OnEnter(AppState::C), set_color::<194, 148, 138>)
         .run();
 }
 
